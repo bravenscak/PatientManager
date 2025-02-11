@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PatientManagerClassLibrary
 {
-    internal class PatientManagerContext : DbContext
+    public class PatientManagerContext : DbContext
     {
         public const string CONNECTION_STRING = @"
             Host=absently-cerebral-tody.data-1.euc1.tembo.io;

@@ -30,5 +30,11 @@ namespace PatientManagerClassLibrary.Models
 
         [Column("date_of_birth")]
         public DateTime DateOfBirth { get; set; }
+
+        public virtual ICollection<MedicalRecord> MedicalRecords { get; set; }
+
+        public virtual ICollection<CheckUp> CheckUps { get; set; }
+
+        public virtual ICollection<Prescription> Prescriptions { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PatientManagerClassLibrary;
@@ -11,9 +12,11 @@ using PatientManagerClassLibrary;
 namespace PatientManagerClassLibrary.Migrations
 {
     [DbContext(typeof(PatientManagerContext))]
-    partial class PatientManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20250211114607_AddedUser")]
+    partial class AddedUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,6 +138,10 @@ namespace PatientManagerClassLibrary.Migrations
                         .HasColumnType("text")
                         .HasColumnName("dosage");
 
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("end_date");
+
                     b.Property<string>("Medication")
                         .IsRequired()
                         .HasColumnType("text")
@@ -207,7 +214,7 @@ namespace PatientManagerClassLibrary.Migrations
             modelBuilder.Entity("PatientManagerClassLibrary.Models.CheckUp", b =>
                 {
                     b.HasOne("PatientManagerClassLibrary.Models.Patient", "Patient")
-                        .WithMany("CheckUps")
+                        .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -218,7 +225,7 @@ namespace PatientManagerClassLibrary.Migrations
             modelBuilder.Entity("PatientManagerClassLibrary.Models.MedicalRecord", b =>
                 {
                     b.HasOne("PatientManagerClassLibrary.Models.Patient", "Patient")
-                        .WithMany("MedicalRecords")
+                        .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -229,21 +236,12 @@ namespace PatientManagerClassLibrary.Migrations
             modelBuilder.Entity("PatientManagerClassLibrary.Models.Prescription", b =>
                 {
                     b.HasOne("PatientManagerClassLibrary.Models.Patient", "Patient")
-                        .WithMany("Prescriptions")
+                        .WithMany()
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("PatientManagerClassLibrary.Models.Patient", b =>
-                {
-                    b.Navigation("CheckUps");
-
-                    b.Navigation("MedicalRecords");
-
-                    b.Navigation("Prescriptions");
                 });
 #pragma warning restore 612, 618
         }

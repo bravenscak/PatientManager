@@ -22,6 +22,7 @@ namespace PatientManagerClassLibrary
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
         public DbSet<CheckUp> CheckUps { get; set; }
         public DbSet<Prescription> Prescriptions { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

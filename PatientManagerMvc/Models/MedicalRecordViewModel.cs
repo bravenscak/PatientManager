@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace PatientManagerMvc.Models
 {
@@ -14,6 +15,9 @@ namespace PatientManagerMvc.Models
 
         public DateTime? EndDate { get; set; }
 
+        [Required(ErrorMessage = "Please select a patient")]
         public long PatientId { get; set; }
+
+        public IEnumerable<SelectListItem> Patients { get; set; }
     }
 }

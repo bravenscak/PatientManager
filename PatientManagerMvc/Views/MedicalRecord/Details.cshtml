@@ -1,5 +1,48 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model PatientManagerClassLibrary.Models.MedicalRecord
+
 @{
+    ViewData["Title"] = "Medical Record Details";
 }
+
+<h2>Medical Record Details</h2>
+
+<div>
+    <h4>Medical Record</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Patient Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Patient.FirstName @Model.Patient.LastName
+        </dd>
+        <dt class="col-sm-2">
+            Diagnosis
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Diagnosis
+        </dd>
+        <dt class="col-sm-2">
+            Start Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.StartDate.ToShortDateString()
+        </dd>
+        <dt class="col-sm-2">
+            End Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.EndDate?.ToShortDateString()
+        </dd>
+        <dt class="col-sm-2">
+            Patient Id
+        </dt>
+        <dd class="col-sm-10">
+            @Model.PatientId
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> |
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PatientManagerClassLibrary;
 using PatientManagerClassLibrary.Models;
@@ -17,9 +18,12 @@ namespace PatientManagerMvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var medicalRecords = await _context.MedicalRecords.ToListAsync();
+            var medicalRecords = await _context.MedicalRecords
+                .Include(m => m.Patient)
+                .ToListAsync();
             return View(medicalRecords);
         }
+
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -37,15 +41,23 @@ namespace PatientManagerMvc.Controllers
             return View(medicalRecord);
         }
 
-        public IActionResult Create(int patientId)
+        public IActionResult Create()
         {
+            var patients = _context.Patients.Select(p => new SelectListItem
+            {
+                Value = p.Id.ToString(),
+                Text = $"{p.FirstName} {p.LastName}"
+            }).ToList();
+
             var medicalRecord = new MedicalRecordViewModel
             {
-                PatientId = patientId,
-                StartDate = DateTime.Now
+                StartDate = DateTime.Now,
+                Patients = patients
             };
+
             return View(medicalRecord);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -81,17 +93,25 @@ namespace PatientManagerMvc.Controllers
                 return NotFound();
             }
 
+            var patients = _context.Patients.Select(p => new SelectListItem
+            {
+                Value = p.Id.ToString(),
+                Text = $"{p.FirstName} {p.LastName}"
+            }).ToList();
+
             var medicalRecordViewModel = new MedicalRecordViewModel
             {
                 Id = medicalRecord.Id,
                 Diagnosis = medicalRecord.Diagnosis,
                 StartDate = medicalRecord.StartDate,
                 EndDate = medicalRecord.EndDate,
-                PatientId = medicalRecord.PatientId
+                PatientId = medicalRecord.PatientId,
+                Patients = patients
             };
 
             return View(medicalRecordViewModel);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

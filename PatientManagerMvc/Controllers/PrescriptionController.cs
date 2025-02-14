@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PatientManagerClassLibrary;
 using PatientManagerClassLibrary.Models;
@@ -17,9 +18,13 @@ namespace PatientManagerMvc.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var perscriptions = await _context.Prescriptions.ToListAsync();
-            return View(perscriptions);
+            var prescriptions = await _context.Prescriptions
+                .Include(p => p.Patient)
+                .ToListAsync();
+            return View(prescriptions);
         }
+
+
 
         public async Task<IActionResult> Details(int? id)
         {
@@ -37,20 +42,23 @@ namespace PatientManagerMvc.Controllers
             return View(prescription);
         }
 
-        public IActionResult Create(long? patientId)
+        public IActionResult Create()
         {
+            var patients = _context.Patients.Select(p => new SelectListItem
+            {
+                Value = p.Id.ToString(),
+                Text = $"{p.FirstName} {p.LastName}"
+            }).ToList();
+
             var viewModel = new PrescriptionViewModel
             {
-                StartDate = DateTime.Now
+                StartDate = DateTime.Now,
+                Patients = patients
             };
-
-            if (patientId != null)
-            {
-                viewModel.PatientId = patientId.Value;
-            }
 
             return View(viewModel);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -81,11 +89,17 @@ namespace PatientManagerMvc.Controllers
                 return NotFound();
             }
 
-            var prescription = await _context.Prescriptions.FirstOrDefaultAsync(p => p.Id == id);
+            var prescription = await _context.Prescriptions.Include(p => p.Patient).FirstOrDefaultAsync(p => p.Id == id);
             if (prescription == null)
             {
                 return NotFound();
             }
+
+            var patients = _context.Patients.Select(p => new SelectListItem
+            {
+                Value = p.Id.ToString(),
+                Text = $"{p.FirstName} {p.LastName}"
+            }).ToList();
 
             var viewModel = new PrescriptionViewModel
             {
@@ -93,11 +107,13 @@ namespace PatientManagerMvc.Controllers
                 Medication = prescription.Medication,
                 Dosage = prescription.Dosage,
                 StartDate = prescription.StartDate,
-                PatientId = prescription.PatientId
+                PatientId = prescription.PatientId,
+                Patients = patients
             };
 
             return View(viewModel);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -142,20 +158,40 @@ namespace PatientManagerMvc.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Delete (int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var prescription = await _context.Prescriptions.FirstOrDefaultAsync(p => p.Id == id);
+            var prescription = await _context.Prescriptions
+                .Include(p => p.Patient)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (prescription == null)
             {
                 return NotFound();
             }
-            return View(prescription);
+
+            var patients = _context.Patients.Select(p => new SelectListItem
+            {
+                Value = p.Id.ToString(),
+                Text = $"{p.FirstName} {p.LastName}"
+            }).ToList();
+
+            var viewModel = new PrescriptionViewModel
+            {
+                Id = prescription.Id,
+                Medication = prescription.Medication,
+                Dosage = prescription.Dosage,
+                StartDate = prescription.StartDate,
+                PatientId = prescription.PatientId,
+                Patients = patients
+            };
+
+            return View(viewModel);
         }
+
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

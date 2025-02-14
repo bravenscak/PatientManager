@@ -23,7 +23,7 @@ namespace PatientManagerClassLibrary.Models
         public string LastName { get; set; }
 
         [Column("sex")]
-        public char Sex { get; set; }
+        public string Sex { get; set; }
 
         [Column("oib")]
         public string Oib { get; set; }
@@ -31,10 +31,8 @@ namespace PatientManagerClassLibrary.Models
         [Column("date_of_birth")]
         public DateTime DateOfBirth { get; set; }
 
-        public virtual ICollection<MedicalRecord> MedicalRecords { get; set; }
-
-        public virtual ICollection<CheckUp> CheckUps { get; set; }
-
-        public virtual ICollection<Prescription> Prescriptions { get; set; }
+        public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
+        public virtual ICollection<CheckUp> CheckUps { get; set; } = new List<CheckUp>();
+        public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
     }
 }

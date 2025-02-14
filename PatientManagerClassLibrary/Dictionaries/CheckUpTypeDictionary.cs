@@ -1,4 +1,4 @@
-﻿using PatientManagerClassLibrary.Models.Enums;
+﻿using PatientManagerClassLibrary.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

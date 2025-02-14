@@ -28,6 +28,6 @@ namespace PatientManagerClassLibrary.Models
         [Column("patient_id")]
         public long PatientId { get; set; }
 
-        public Patient Patient { get; set; }
+        public virtual Patient Patient { get; set; }
     }
 }

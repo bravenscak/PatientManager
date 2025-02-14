@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PatientManagerClassLibrary.Models.Enums
+namespace PatientManagerClassLibrary.Enums
 {
     public enum CheckUpType
     {

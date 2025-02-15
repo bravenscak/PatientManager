@@ -13,6 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<PatientManagerContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Postgre")).UseLazyLoadingProxies());
 
+builder.Services.AddScoped<IMinioService, MinioService>();
 
 builder.Services.AddScoped<IUserService,  UserService>();
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using PatientManagerClassLibrary.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace PatientManagerMvc.Models
@@ -18,7 +20,12 @@ namespace PatientManagerMvc.Models
 
         public long PatientId { get; set; }
 
+        [ValidateNever]
         public IEnumerable<SelectListItem> Patients { get; set; }
 
+        [ValidateNever]
+        public Patient Patient { get; set; } 
     }
+
+
 }

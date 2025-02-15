@@ -7,7 +7,7 @@
     if (user != null && !string.IsNullOrEmpty(user.Identity?.Name))
     {
         loggedIn = true;
-        username = user.Identity.Name.ToUpper();
+        username = user.Identity.Name.Trim();
     }
 }
 <!DOCTYPE html>
@@ -62,7 +62,7 @@
                     @if (loggedIn)
                     {
                         <div>
-                            <span class="badge bg-primary">Welcome, @username</span>
+                            <span>Welcome, @username</span>
                             <a asp-controller="User" asp-action="Logout" class="btn btn-danger">Logout</a>
                         </div>
                     }

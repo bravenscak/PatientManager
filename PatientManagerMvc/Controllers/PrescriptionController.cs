@@ -26,7 +26,7 @@ namespace PatientManagerMvc.Controllers
 
 
 
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
             {
@@ -59,19 +59,18 @@ namespace PatientManagerMvc.Controllers
             return View(viewModel);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PrescriptionViewModel prescription)
+        public async Task<IActionResult> Create(PrescriptionViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
                 var newPrescription = new Prescription
                 {
-                    Medication = prescription.Medication,
-                    Dosage = prescription.Dosage,
-                    StartDate = prescription.StartDate,
-                    PatientId = prescription.PatientId
+                    Medication = viewModel.Medication,
+                    Dosage = viewModel.Dosage,
+                    StartDate = DateTime.SpecifyKind(viewModel.StartDate, DateTimeKind.Utc),
+                    PatientId = viewModel.PatientId
                 };
 
                 _context.Prescriptions.Add(newPrescription);
@@ -79,10 +78,17 @@ namespace PatientManagerMvc.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(prescription);
+            viewModel.Patients = _context.Patients.Select(p => new SelectListItem
+            {
+                Value = p.Id.ToString(),
+                Text = $"{p.FirstName} {p.LastName}"
+            }).ToList();
+
+            return View(viewModel);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+
+        public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
             {
@@ -117,7 +123,7 @@ namespace PatientManagerMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, PrescriptionViewModel viewModel)
+        public async Task<IActionResult> Edit(long id, PrescriptionViewModel viewModel)
         {
             if (id != viewModel.Id)
             {
@@ -136,7 +142,7 @@ namespace PatientManagerMvc.Controllers
 
                     prescription.Medication = viewModel.Medication;
                     prescription.Dosage = viewModel.Dosage;
-                    prescription.StartDate = viewModel.StartDate;
+                    prescription.StartDate = DateTime.SpecifyKind(viewModel.StartDate, DateTimeKind.Utc);
                     prescription.PatientId = viewModel.PatientId;
 
                     _context.Update(prescription);
@@ -158,7 +164,7 @@ namespace PatientManagerMvc.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
             {
@@ -173,12 +179,6 @@ namespace PatientManagerMvc.Controllers
                 return NotFound();
             }
 
-            var patients = _context.Patients.Select(p => new SelectListItem
-            {
-                Value = p.Id.ToString(),
-                Text = $"{p.FirstName} {p.LastName}"
-            }).ToList();
-
             var viewModel = new PrescriptionViewModel
             {
                 Id = prescription.Id,
@@ -186,27 +186,28 @@ namespace PatientManagerMvc.Controllers
                 Dosage = prescription.Dosage,
                 StartDate = prescription.StartDate,
                 PatientId = prescription.PatientId,
-                Patients = patients
+                Patient = prescription.Patient // Include patient information
             };
 
             return View(viewModel);
         }
 
-
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmation(int? id)
+        public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var prescrition = await _context.Prescriptions.FindAsync(id);
-            if (prescrition == null)
+            var prescription = await _context.Prescriptions.FindAsync(id);
+            if (prescription == null)
             {
                 return NotFound();
             }
 
-            _context.Prescriptions.Remove(prescrition);
-            _context.SaveChanges();
+            _context.Prescriptions.Remove(prescription);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
 
         private bool PrescriptionExists(long id)
         {

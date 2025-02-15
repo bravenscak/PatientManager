@@ -36,8 +36,10 @@ namespace PatientManagerMvc.Controllers
         [HttpPost]
         public IActionResult Login(UserLoginViewModel userLoginViewModel)
         {
-            var existingUser = _context.Users.FirstOrDefault(u => u.Username == userLoginViewModel.Username);
-            if (existingUser != null)
+            var existingUser = _context.Users
+                .AsEnumerable()
+                .FirstOrDefault(u => u.Username.Equals(userLoginViewModel.Username, StringComparison.OrdinalIgnoreCase));
+            if (existingUser == null)
             {
                 ModelState.AddModelError("Username", "Invalid username");
                 return View();
@@ -51,20 +53,20 @@ namespace PatientManagerMvc.Controllers
             }
 
             var claims = new List<Claim>
-            {
-            new Claim(ClaimTypes.Name, userLoginViewModel.Username)
-            };
+    {
+        new Claim(ClaimTypes.Name, userLoginViewModel.Username)
+    };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             var authProperties = new AuthenticationProperties();
 
             Task.Run(async () =>
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties)
-                ).GetAwaiter().GetResult();
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    authProperties)
+            ).GetAwaiter().GetResult();
 
             if (!string.IsNullOrEmpty(userLoginViewModel.ReturnUrl))
             {
@@ -75,6 +77,7 @@ namespace PatientManagerMvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
 
         public IActionResult Logout()
         {

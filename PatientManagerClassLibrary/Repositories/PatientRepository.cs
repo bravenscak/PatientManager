@@ -23,7 +23,7 @@ namespace PatientManagerClassLibrary.Repositories
             await _context.SaveChangesAsync();  
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(long id)
         {
             var entity = await _context.Patients.FindAsync(id);
             if (entity != null)
@@ -38,7 +38,7 @@ namespace PatientManagerClassLibrary.Repositories
             return await _context.Patients.ToListAsync();
         }
 
-        public async Task<Patient?> GetByIdAsync(int id)
+        public async Task<Patient?> GetByIdAsync(long id)
         {
             return await _context.Patients
                 .Include(p => p.MedicalRecords)

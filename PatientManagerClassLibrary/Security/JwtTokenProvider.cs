@@ -11,7 +11,7 @@ namespace PatientManagerClassLibrary.Security
 {
     public class JwtTokenProvider
     {
-        public static string CreateToken(string secureKey, int expiration, string subject = null)
+        public static string CreateToken(string secureKey, long expiration, string subject = null)
         {
             var tokenKey = Encoding.UTF8.GetBytes(secureKey);
 

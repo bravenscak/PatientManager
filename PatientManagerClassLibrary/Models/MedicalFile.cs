@@ -8,26 +8,19 @@ using System.Threading.Tasks;
 
 namespace PatientManagerClassLibrary.Models
 {
-    [Table("check_up")]
-    public class CheckUp
+    public class MedicalFile
     {
         [Column("id")]
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        [Column("date")]
-        public DateTime Date { get; set; }
+        [Column("object_id")]
+        public string ObjectId { get; set; }
 
-        [Column("type")]
-        public string Type { get; set; }
+        [Column("checkup_id")]
+        public long CheckUpId { get; set; }
 
-        [Column("patient_id")]
-        public long PatientId { get; set; }
-
-        public virtual Patient Patient { get; set; }
-
-        public virtual ICollection<MedicalFile> MedicalFiles { get; set; }
-
+        public virtual CheckUp CheckUp { get; set; }
     }
 }

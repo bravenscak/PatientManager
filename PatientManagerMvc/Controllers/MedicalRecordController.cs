@@ -25,7 +25,7 @@ namespace PatientManagerMvc.Controllers
         }
 
 
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
             {
@@ -68,8 +68,8 @@ namespace PatientManagerMvc.Controllers
                 var newMedicalRecord = new MedicalRecord
                 {
                     Diagnosis = medicalRecord.Diagnosis,
-                    StartDate = medicalRecord.StartDate,
-                    EndDate = medicalRecord.EndDate,
+                    StartDate = DateTime.SpecifyKind(medicalRecord.StartDate, DateTimeKind.Utc),
+                    EndDate = medicalRecord.EndDate.HasValue ? DateTime.SpecifyKind(medicalRecord.EndDate.Value, DateTimeKind.Utc) : (DateTime?)null,
                     PatientId = medicalRecord.PatientId
                 };
 
@@ -80,7 +80,8 @@ namespace PatientManagerMvc.Controllers
             return View(medicalRecord);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+
+        public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
             {
@@ -115,7 +116,7 @@ namespace PatientManagerMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, MedicalRecordViewModel viewModel)
+        public async Task<IActionResult> Edit(long id, MedicalRecordViewModel viewModel)
         {
             if (id != viewModel.Id)
             {
@@ -133,8 +134,8 @@ namespace PatientManagerMvc.Controllers
                     }
 
                     medicalRecord.Diagnosis = viewModel.Diagnosis;
-                    medicalRecord.StartDate = viewModel.StartDate;
-                    medicalRecord.EndDate = viewModel.EndDate;
+                    medicalRecord.StartDate = DateTime.SpecifyKind(viewModel.StartDate, DateTimeKind.Utc);
+                    medicalRecord.EndDate = viewModel.EndDate.HasValue ? DateTime.SpecifyKind(viewModel.EndDate.Value, DateTimeKind.Utc) : (DateTime?)null;
                     medicalRecord.PatientId = viewModel.PatientId;
 
                     _context.Update(medicalRecord);
@@ -156,7 +157,8 @@ namespace PatientManagerMvc.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+
+        public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
             {
@@ -174,7 +176,7 @@ namespace PatientManagerMvc.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var medicalRecord = await _context.MedicalRecords.FindAsync(id);
             if (medicalRecord == null)

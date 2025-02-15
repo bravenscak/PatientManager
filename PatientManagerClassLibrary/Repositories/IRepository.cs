@@ -8,7 +8,7 @@ namespace PatientManagerClassLibrary.Repositories
 {
     public interface IRepository<T> where T : class 
     {
-        Task<T> GetByIdAsync(int id);
+        Task<T> GetByIdAsync(long id);
 
         Task<IEnumerable<T>> GetAllAsync();
 
@@ -16,6 +16,6 @@ namespace PatientManagerClassLibrary.Repositories
 
         Task UpdateAsync(T entity);
 
-        Task DeleteAsync(int id);
+        Task DeleteAsync(long id);
     }
 }

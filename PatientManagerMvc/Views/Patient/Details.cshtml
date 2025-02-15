@@ -4,90 +4,107 @@
     ViewData["Title"] = "Patient Details";
 }
 
-<h1>Patient Details</h1>
+<h2>Patient Details</h2>
 
 <div>
     <h4>Patient</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
+            First Name
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
+            @Model.FirstName
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
+            Last Name
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
+            @Model.LastName
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Sex)
+            Sex
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Sex)
+            @Model.Sex
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Oib)
+            OIB
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Oib)
+            @Model.Oib
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DateOfBirth)
+            Date of Birth
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DateOfBirth)
+            @Model.DateOfBirth.ToShortDateString()
         </dd>
-
     </dl>
 </div>
 
-<div>
-    <h4>
-        Medical Record
-        <a asp-action="Create" asp-controller="MedicalRecord" asp-route-patientId="@Model.Id" class="btn btn-primary">Add Medical Record</a>
-    </h4>
-    <hr />
-    <ul>
-        @foreach (var medicalRecord in Model.MedicalRecords)
+<h4>Medical Records</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Diagnosis</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var record in Model.MedicalRecords)
         {
-            <li>@medicalRecord.Diagnosis -> @medicalRecord.StartDate - @medicalRecord.EndDate</li>
+            <tr>
+                <td>@record.Diagnosis</td>
+                <td>@record.StartDate.ToShortDateString()</td>
+                <td>@record.EndDate?.ToShortDateString()</td>
+            </tr>
         }
-    </ul>
-</div>
+    </tbody>
+</table>
 
-<div>
-    <h4>
-        Prescriptions
-        <a asp-action="Create" asp-controller="Prescription" asp-route-patientId="@Model.Id" class="btn btn-primary">Add Prescription</a>
-    </h4>
-    <hr />
-    <ul>
+<h4>Prescriptions</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Medication</th>
+            <th>Dosage</th>
+            <th>Start Date</th>
+        </tr>
+    </thead>
+    <tbody>
         @foreach (var prescription in Model.Prescriptions)
         {
-            <li>@prescription.Medication - @prescription.Dosage</li>
+            <tr>
+                <td>@prescription.Medication</td>
+                <td>@prescription.Dosage</td>
+                <td>@prescription.StartDate.ToShortDateString()</td>
+            </tr>
         }
-    </ul>
+    </tbody>
+</table>
 
-</div>
-
-<div>
-    <h4>
-        Examinations
-        <a asp-action="Create" asp-controller="Examination" asp-route-patientId="@Model.Id" class="btn btn-primary">Add Examination</a>
-    </h4>
-    <hr />
-    <ul>
-        @foreach (var examination in Model.CheckUps)
+<h4>Check-Ups</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var checkUp in Model.CheckUps)
         {
-            <li>@examination.Date.ToShortDateString() - @ViewBag.ExaminationTypes[examination.Type]</li>
+            <tr>
+                <td>@checkUp?.Type.ToString() ?? "N/A"</td>
+                <td>@checkUp.Date.ToShortDateString()</td>
+            </tr>
         }
-    </ul>
-</div>
+    </tbody>
+</table>
 
 <div>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a> |
-    <a asp-action="ExportToCsv" asp-route-id="@Model.Id" class="btn btn-success">Export as CSV</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> |
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>

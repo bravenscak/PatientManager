@@ -25,7 +25,7 @@ namespace PatientManagerMvc.Controllers
             return View(checkUps);
         }
 
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
             {
@@ -43,8 +43,6 @@ namespace PatientManagerMvc.Controllers
 
             return View(checkUp);
         }
-
-
         public IActionResult Create(long? patientId)
         {
             var viewModel = new CheckUpViewModel
@@ -62,10 +60,9 @@ namespace PatientManagerMvc.Controllers
                 viewModel.PatientId = patientId.Value;
             }
 
-            ViewBag.CheckUpTypes = CheckUpTypeDictionary.Descriptions;
+            ViewBag.CheckUpTypes = new SelectList(Enum.GetValues(typeof(CheckUpType)).Cast<CheckUpType>().Select(e => new { Value = e, Text = e.ToString() }), "Value", "Text");
             return View(viewModel);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -75,7 +72,7 @@ namespace PatientManagerMvc.Controllers
             {
                 var checkUp = new CheckUp
                 {
-                    Date = viewModel.Date,
+                    Date = DateTime.SpecifyKind(viewModel.Date, DateTimeKind.Utc),
                     Type = viewModel.Type.ToString(),
                     PatientId = viewModel.PatientId
                 };
@@ -84,11 +81,11 @@ namespace PatientManagerMvc.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.CheckUpTypes = CheckUpTypeDictionary.Descriptions;
+            ViewBag.CheckUpTypes = new SelectList(Enum.GetValues(typeof(CheckUpType)).Cast<CheckUpType>().Select(e => new { Value = e, Text = e.ToString() }), "Value", "Text");
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
             {
@@ -106,16 +103,22 @@ namespace PatientManagerMvc.Controllers
                 Id = checkUp.Id,
                 Date = checkUp.Date,
                 Type = Enum.Parse<CheckUpType>(checkUp.Type),
-                PatientId = checkUp.PatientId
+                PatientId = checkUp.PatientId,
+                Patients = _context.Patients.Select(p => new SelectListItem
+                {
+                    Value = p.Id.ToString(),
+                    Text = $"{p.FirstName} {p.LastName}"
+                }).ToList()
             };
 
             ViewBag.CheckUpTypes = CheckUpTypeDictionary.Descriptions;
             return View(viewModel);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CheckUpViewModel viewModel)
+        public async Task<IActionResult> Edit(long id, CheckUpViewModel viewModel)
         {
             if (id != viewModel.Id)
             {
@@ -160,7 +163,7 @@ namespace PatientManagerMvc.Controllers
             return View(viewModel);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
             {
@@ -178,7 +181,7 @@ namespace PatientManagerMvc.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmation(int? id)
+        public async Task<IActionResult> DeleteConfirmation(long? id)
         {
             var checkUp = await _context.CheckUps.FindAsync(id);
             if (checkUp == null)

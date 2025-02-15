@@ -16,7 +16,7 @@ namespace PatientManagerClassLibrary.Services.Interfaces
         Task CreateUserAsync(User user);
 
         Task UpdateUserAsync(User user);
-
+        
         Task DeleteUserAsync(long id);
     }
 }

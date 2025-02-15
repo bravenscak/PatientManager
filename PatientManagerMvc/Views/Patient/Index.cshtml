@@ -16,7 +16,7 @@
 </form>
 
 <div class="mt-3">
-    <a asp-action="Create" class="btn btn-success">Create New Patient</a>
+    <a asp-action="Create" class="btn btn-success">Create New</a>
 </div>
 
 @if (ViewData["CurrentFilter"] != null)
@@ -68,9 +68,9 @@
                             @Html.DisplayFor(modelItem => item.DateOfBirth)
                         </td>
                         <td>
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a> |
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Edit</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
                         </td>
                     </tr>
                 }
@@ -78,3 +78,5 @@
         </table>
     }
 }
+
+

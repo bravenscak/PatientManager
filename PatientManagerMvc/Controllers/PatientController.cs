@@ -20,18 +20,19 @@ namespace PatientManagerMvc.Controllers
             _csvExporter = csvExporter;
         }
 
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string searchString)
         {
-            ViewData["CurrentFilter"] = search;
+            ViewData["CurrentFilter"] = searchString;
 
-            IQueryable<Patient> patients = _context.Patients;
+            var patients = from p in _context.Patients
+                           select p;
 
-            if (!String.IsNullOrEmpty(search))
+            if (!String.IsNullOrEmpty(searchString))
             {
-                patients = patients.Where(p => p.LastName.Contains(search) || p.Oib.Contains(search));
+                patients = patients.Where(p => p.LastName.Contains(searchString) || p.Oib.Contains(searchString));
             }
 
-            var patientList = patients.ToList();
+            var patientList = await patients.ToListAsync();
 
             var patientViewModel = patientList
                 .Select(p => new PatientViewModel
@@ -42,12 +43,14 @@ namespace PatientManagerMvc.Controllers
                     Sex = p.Sex,
                     Oib = p.Oib,
                     DateOfBirth = p.DateOfBirth
-                });
+                }).ToList();
 
             return View(patientViewModel);
         }
 
-        public IActionResult Details(int id)
+
+
+        public IActionResult Details(long id)
         {
             var patient = _context.Patients
                 .Where(p => p.Id == id)
@@ -103,7 +106,7 @@ namespace PatientManagerMvc.Controllers
                     LastName = patient.LastName,
                     Sex = patient.Sex,
                     Oib = patient.Oib,
-                    DateOfBirth = patient.DateOfBirth
+                    DateOfBirth = DateTime.SpecifyKind(patient.DateOfBirth, DateTimeKind.Utc)
                 };
 
                 _context.Patients.Add(newPatient);
@@ -113,7 +116,7 @@ namespace PatientManagerMvc.Controllers
             return View(patient);
         }
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
             {
@@ -141,7 +144,7 @@ namespace PatientManagerMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, PatientViewModel patient)
+        public async Task<IActionResult> Edit(long id, PatientViewModel patient)
         {
             if (id != patient.Id)
             {
@@ -162,7 +165,7 @@ namespace PatientManagerMvc.Controllers
                     existingPatient.LastName = patient.LastName;
                     existingPatient.Sex = patient.Sex;
                     existingPatient.Oib = patient.Oib;
-                    existingPatient.DateOfBirth = patient.DateOfBirth;
+                    existingPatient.DateOfBirth = DateTime.SpecifyKind(patient.DateOfBirth, DateTimeKind.Utc);
 
                     _context.Update(existingPatient);
                     await _context.SaveChangesAsync();
@@ -182,7 +185,7 @@ namespace PatientManagerMvc.Controllers
             return View(patient);
         }
 
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
             {
@@ -209,7 +212,7 @@ namespace PatientManagerMvc.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmation(int? id)
+        public async Task<IActionResult> DeleteConfirmation(long? id)
         {
             var patient = await _context.Patients.FindAsync(id);
 
@@ -228,7 +231,7 @@ namespace PatientManagerMvc.Controllers
             return _context.Patients.Any(p => p.Id == id);
         }
 
-        public async Task<IActionResult> ExportToCsv(int id)
+        public async Task<IActionResult> ExportToCsv(long id)
         {
             var patients = await _context.Patients
                 .Include(p=>p.MedicalRecords)

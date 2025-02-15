@@ -30,6 +30,8 @@ namespace PatientManagerClassLibrary
         public DbSet<CheckUp> CheckUps { get; set; }
         public DbSet<Prescription> Prescriptions { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<MedicalFile> MedicalFiles { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -56,6 +58,11 @@ namespace PatientManagerClassLibrary
                 .HasOne(p => p.Patient)
                 .WithMany(p => p.Prescriptions)
                 .HasForeignKey(p => p.PatientId);
+
+            modelBuilder.Entity<MedicalFile>()
+                .HasOne(mf => mf.CheckUp)
+                .WithMany(e => e.MedicalFiles)
+                .HasForeignKey(mf => mf.CheckUpId);
         }
     }
 }

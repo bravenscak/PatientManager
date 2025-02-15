@@ -1,0 +1,55 @@
+﻿@model IEnumerable<MedicalFileViewModel>
+
+@{
+    ViewData["Title"] = "Medical Files";
+}
+
+<h2>Medical Files</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Patient Name
+            </th>
+            <th>
+                Check-Up Type
+            </th>
+            <th>
+                Check-Up Date
+            </th>
+            <th>
+                ObjectId
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.CheckUps.First().Text.Split(" - ")[0]
+                </td>
+                <td>
+                    @item.CheckUps.First().Text.Split(" - ")[1]
+                </td>
+                <td>
+                    @item.CheckUps.First().Text.Split(" - ")[2]
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ObjectId)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a> |
+                    <a asp-action="DownloadFile" asp-route-id="@item.Id" class="btn btn-outline-primary">Download</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

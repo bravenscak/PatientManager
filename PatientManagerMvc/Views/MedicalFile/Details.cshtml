@@ -1,0 +1,48 @@
+﻿@model MedicalFileViewModel
+
+@{
+    ViewData["Title"] = "Medical File Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>MedicalFile</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Patient Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.CheckUps.First().Text.Split(" - ")[0]
+        </dd>
+        <dt class="col-sm-2">
+            Check-Up Type
+        </dt>
+        <dd class="col-sm-10">
+            @Model.CheckUps.First().Text.Split(" - ")[1]
+        </dd>
+        <dt class="col-sm-2">
+            Check-Up Date
+        </dt>
+        <dd class="col-sm-10">
+            @Model.CheckUps.First().Text.Split(" - ")[2]
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ObjectId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ObjectId)
+        </dd>
+        <dt class="col-sm-2">
+            Image Preview
+        </dt>
+        <dd class="col-sm-10">
+            <img src="@Url.Action("GetImage", "MedicalFile", new { id = Model.Id })" alt="Image Preview" class="img-fluid" />
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a> |
+    <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+</div>

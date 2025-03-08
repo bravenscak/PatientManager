@@ -18,10 +18,10 @@ namespace PatientManagerClassLibrary
         }
 
         public const string CONNECTION_STRING = @"
-            Host=absently-cerebral-tody.data-1.euc1.tembo.io;
+            Host=yourHost;
             Port=5432;
             Username=postgres;
-            Password=tdLhCLTTl1p7E1eg;
+            Password=yourPassword;
             Database=postgres
         ";
 

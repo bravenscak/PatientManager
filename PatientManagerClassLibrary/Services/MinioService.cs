@@ -17,7 +17,7 @@ namespace PatientManagerClassLibrary.Services
         public MinioService()
         {
             _minioClient = new MinioClient()
-                .WithCredentials("bravenscak", "963lmi728BB@")
+                .WithCredentials("yourMinioAccessKey", "yourMinioPassword")
                 .WithEndpoint("localhost:9000")
                 .Build();
         }
